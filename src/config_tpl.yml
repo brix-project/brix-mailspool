@@ -1,3 +1,4 @@
-crm:
-    customers_dir: './customers'
-    templates_dir: './tpl'
+mailspool:
+    spool_dir: './_mailspool'
+
+

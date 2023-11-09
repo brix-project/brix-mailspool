@@ -2,7 +2,13 @@
 
 namespace Brix\MailSpool;
 
-class Mailspool
+use Brix\Core\AbstractBrixCommand;
+
+class Mailspool extends AbstractBrixCommand
 {
+
+    public function send() {
+
+    }
 
 }

@@ -6,9 +6,15 @@ namespace Brix;
 
 
 
-use Brix\CRM\Customer;
-use Brix\CRM\Invoice;
+
+use Brix\Core\BrixEnvFactorySingleton;
+use Brix\Core\Type\BrixEnv;
+use Brix\MailSpool\Mailspool;
+use Brix\MailSpool\MailSpoolFacet;
 use Phore\Cli\CliDispatcher;
 
-CliDispatcher::addClass(Customer::class);
-CliDispatcher::addClass(Invoice::class);
+CliDispatcher::addClass(Mailspool::class);
+
+// Initalize the MailSpooler
+MailSpoolFacet::Initialize(BrixEnvFactorySingleton::getInstance()->getEnv());
+
