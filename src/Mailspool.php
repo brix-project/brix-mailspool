@@ -7,12 +7,14 @@ use Brix\Core\AbstractBrixCommand;
 class Mailspool extends AbstractBrixCommand
 {
 
-    public function send() {
+    public function send(array $argv = [], bool $all = false) {
+
 
     }
 
-    public function new_mail() {
+    public function list() {
 
     }
+
 
 }

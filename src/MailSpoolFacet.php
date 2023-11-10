@@ -3,16 +3,31 @@
 namespace Brix\MailSpool;
 
 use Brix\Core\Type\BrixEnv;
+use Brix\Mailer\Type\T_MailerConfig;
+use Brix\MailSpool\Type\T_MailSpoolConfig;
 use http\Exception\UnexpectedValueException;
+use Lack\MailSpool\MailSpooler;
+use Lack\MailSpool\OutgoingMail;
 
 class MailSpoolFacet
 {
 
-    private function __construct(public BrixEnv $brixEnv)
+    public MailSpooler $mailSpooler;
+    private function __construct(public BrixEnv $brixEnv, public T_MailSpoolConfig $config)
     {
+        $this->mailSpooler = new MailSpooler(
+            $this->brixEnv->rootDir->withRelativePath(
+                $this->config->spool_dir
+            )->assertDirectory()
+        );
     }
 
 
+
+
+    public function spoolMail(OutgoingMail $outgoingMail) {
+        $this->mailSpooler->spoolMail($outgoingMail);
+    }
 
 
 
@@ -28,7 +43,12 @@ class MailSpoolFacet
     }
 
 
-    public static function Initialize(BrixEnv $env) {
-        self::$instance = new self($env);
+    public static function Initialize(BrixEnv $brixEnv) {
+        $config = $brixEnv->brixConfig->get(
+            "mailer",
+            T_MailerConfig::class,
+            file_get_contents(__DIR__ . "/config_tpl.yml")
+        );
+        self::$instance = new self($brixEnv, $config);
     }
 }
