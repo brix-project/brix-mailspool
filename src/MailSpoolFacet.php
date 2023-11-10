@@ -18,7 +18,7 @@ class MailSpoolFacet
         $this->mailSpooler = new MailSpooler(
             $this->brixEnv->rootDir->withRelativePath(
                 $this->config->spool_dir
-            )->assertDirectory()
+            )->assertDirectory(true)
         );
     }
 
@@ -45,8 +45,8 @@ class MailSpoolFacet
 
     public static function Initialize(BrixEnv $brixEnv) {
         $config = $brixEnv->brixConfig->get(
-            "mailer",
-            T_MailerConfig::class,
+            "mailspool",
+            T_MailSpoolConfig::class,
             file_get_contents(__DIR__ . "/config_tpl.yml")
         );
         self::$instance = new self($brixEnv, $config);
