@@ -11,4 +11,8 @@ class Mailspool extends AbstractBrixCommand
 
     }
 
+    public function new_mail() {
+
+    }
+
 }
