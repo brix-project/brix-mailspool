@@ -1,4 +1,11 @@
 mailspool:
     spool_dir: './_mailspool'
+    sent_dir: ~
 
-
+    smtp:
+        host: 'smtp.gmail.com'
+        port: 587
+        username: ''
+        sender: 'no-reply@host.xy'
+        sender_name: "BrixSender"
+        # SMTP password is retrieved vom Keystore <servername>
