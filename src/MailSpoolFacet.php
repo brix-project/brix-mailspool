@@ -39,6 +39,11 @@ class MailSpoolFacet
 
 
 
+    public function spoolMailFromTemplate(string $template, array $data) {
+        $mail = OutgoingMail::FromTemplate($template, $data);
+        $this->spoolMail($mail);
+    }
+
 
 
 
