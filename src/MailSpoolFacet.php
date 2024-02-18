@@ -74,6 +74,24 @@ class MailSpoolFacet
         }
     }
     
+    public function listSpooledMails()
+    {
+        $mails = $this->mailSpooler->list();
+        $ret = [];
+        foreach ($mails as $mail) {
+            $ret[] = [
+                "id" => $mail->getMailSpoolId(),
+                "subject" => $mail->getSubject(),
+                "to" => $mail->getTo(),
+                "from" => $mail->getFrom(),
+                "sent" => $mail->getSent(),
+                "status" => $mail->getStatus()
+            ];
+        }
+        return $ret;
+        
+    }
+    
 
 
     private static $instance;

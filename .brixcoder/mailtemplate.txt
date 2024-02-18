@@ -1,0 +1,8 @@
+---
+To: "{{ to }}"
+Subject: "Hello world {{name}}"
+---
+
+Hello {{name}}!
+
+this is the mail body.
