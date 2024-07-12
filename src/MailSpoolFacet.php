@@ -81,17 +81,19 @@ class MailSpoolFacet
         foreach ($mails as $mail) {
             $ret[] = [
                 "id" => $mail->getMailSpoolId(),
-                "subject" => $mail->getSubject(),
-                "to" => $mail->getTo(),
-                "from" => $mail->getFrom(),
-                "sent" => $mail->getSent(),
-                "status" => $mail->getStatus()
+                "subject" => $mail->headers["subject"],
+                "to" => $mail->headers["to"],
+                "from" => $mail->headers["from"]
             ];
         }
         return $ret;
         
     }
     
+    public function hasUnsentMails() : bool
+    {
+        return count($this->mailSpooler->list()) > 0;
+    }
 
 
     private static $instance;
