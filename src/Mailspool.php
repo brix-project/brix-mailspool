@@ -3,6 +3,9 @@
 namespace Brix\MailSpool;
 
 use Brix\Core\AbstractBrixCommand;
+use Lack\MailSpool\OutgoingMail;
+use Lack\MailSpool\OutgoingMailAttachment;
+use Phore\Cli\Annotation\CliParameter;
 use Phore\Cli\Exception\CliException;
 use Phore\Cli\Output\Out;
 
@@ -44,5 +47,40 @@ class Mailspool extends AbstractBrixCommand
         Out::Table($mails);
     }
 
+
+    public function queue(
+        #[CliParameter("to", "Recipient email address")]
+        string $to,
+        #[CliParameter("subject", "Mail subject")]
+        string $subject,
+        #[CliParameter("attachment", "Optional file to attach")]
+        ?string $attachment = null
+    ) : void {
+
+
+        $body = stream_get_contents(STDIN);
+        if ($body === false) {
+            throw new CliException("Unable to read mail body from stdin.");
+        }
+
+        $mail = new OutgoingMail();
+        $mail->setTo($to);
+        $mail->setSubject($subject); // From is set by SMTP driver
+        $mail->textBody = $body;
+
+        if ($attachment !== null) {
+            if ( ! is_file($attachment) || ! is_readable($attachment)) {
+                throw new CliException("Attachment not readable: $attachment");
+            }
+            $data = file_get_contents($attachment);
+            if ($data === false) {
+                throw new CliException("Unable to read attachment: $attachment");
+            }
+            $mail->attachments[] = new OutgoingMailAttachment($data, basename($attachment));
+        }
+
+        $mailId = $this->facet->spoolMail($mail);
+        Out::TextSuccess("Mail queued: **{$mailId}**");
+    }
 
 }

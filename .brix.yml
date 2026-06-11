@@ -9,3 +9,18 @@ coder:
         - .keystore.yml
         - ./vendor/
         - ./node_modules
+
+mailspool:
+    spool_dir: './_mailspool'
+    sent_dir: ~
+
+    smtp:
+        host: 'smtp.gmail.com'
+        port: 587
+        username: ''
+        sender: 'no-reply@host.xy'
+        sender_name: "BrixSender"
+        # Optional: override the keystore key name or load from a file via
+        # secret_name: 'smtp_password'
+        # secret_name: 'file:///run/secrets/smtp_password'
+        # By default the SMTP password is retrieved from keystore using <host>.

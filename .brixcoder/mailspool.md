@@ -19,3 +19,17 @@ MailSpoolFacet::getInstance()->spoolMail($mail);
 
 Mail Templates are regular frontmatter files with a yaml section on top and a markdown section below. Make
 Sure to start and end the header with ```---```.
+
+## CLI queue command
+
+You can queue a mail directly from the CLI by piping the body via stdin:
+
+```bash
+echo "Hello World" | vendor/bin/brix mailspool queue --to user@example.org --subject "Test"
+```
+
+With attachment:
+
+```bash
+cat body.txt | vendor/bin/brix mailspool queue --to user@example.org --subject "Test" --attachment ./document.pdf
+```
