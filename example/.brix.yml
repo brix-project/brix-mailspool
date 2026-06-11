@@ -1,0 +1,14 @@
+version: '1.0'
+
+
+mailspool:
+    spool_dir: './_mailspool'
+
+    smtp:
+        host: 'smtp.example.com'
+        port: 25
+        username: 'test@xyz.de'
+        sender: 'no-reply@host.xy'
+        sender_name: "BrixSender"
+        secret_name: "smtp_secret" ## Alterative: file:///path/to/secret.txt to use for smtp-authentication
+        # SMTP password is retrieved vom Keystore <servername>

@@ -3,8 +3,6 @@
 namespace Brix\MailSpool;
 
 use Brix\Core\AbstractBrixCommand;
-use Lack\Keystore\KeyStore;
-use Lack\MailSpool\Driver\PhpmailerDriver;
 use Phore\Cli\Exception\CliException;
 use Phore\Cli\Output\Out;
 
@@ -30,8 +28,7 @@ class Mailspool extends AbstractBrixCommand
             $mails = [$mails[$mailNo]];
 
         }
-        $sC = $this->facet->config->smtp;
-        $this->facet->mailSpooler->setDriver(new PhpmailerDriver($sC->host, $sC->port, $sC->username, KeyStore::Get()->getAccessKey($sC->host), $sC->sender, $sC->sender_name));
+        $this->facet->mailSpooler->setDriver($this->facet->createSmtpDriver());
         foreach ($mails as $mail) {
             echo "\nSending mail: " . $mail->getMailSpoolId() . " (Delete: $delete)\n";
             $this->facet->mailSpooler->send($mail, null, $delete === "yes");

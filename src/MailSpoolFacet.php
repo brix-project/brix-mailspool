@@ -3,8 +3,8 @@
 namespace Brix\MailSpool;
 
 use Brix\Core\Type\BrixEnv;
-use Brix\Mailer\Type\T_MailerConfig;
 use Brix\MailSpool\Type\T_MailSpoolConfig;
+use Brix\MailSpool\Type\T_MailSpoolConfig_Server;
 use http\Exception\UnexpectedValueException;
 use Lack\Keystore\KeyStore;
 use Lack\MailSpool\Driver\PhpmailerDriver;
@@ -61,9 +61,42 @@ class MailSpoolFacet
 
 
 
-    public function sendMail(string $mailId = null, bool $delete = true) {
+    public function createSmtpDriver(): PhpmailerDriver
+    {
         $sC = $this->config->smtp;
-        $this->mailSpooler->setDriver(new PhpmailerDriver($sC->host, $sC->port, $sC->username, KeyStore::Get()->getAccessKey($sC->host), $sC->sender, $sC->sender_name));
+        return new PhpmailerDriver(
+            $sC->host,
+            $sC->port,
+            $sC->username,
+            $this->resolveSmtpSecret($sC),
+            $sC->sender,
+            $sC->sender_name
+        );
+    }
+
+    private function resolveSmtpSecret(T_MailSpoolConfig_Server $smtpConfig): string
+    {
+        if ($smtpConfig->secret_name === null || trim($smtpConfig->secret_name) === "") {
+            return KeyStore::Get()->getAccessKey($smtpConfig->host);
+        }
+
+        if (str_starts_with($smtpConfig->secret_name, "file://")) {
+            $filename = substr($smtpConfig->secret_name, 7);
+            if ($filename === "" || ! is_file($filename) || ! is_readable($filename)) {
+                throw new \RuntimeException("Unable to read smtp secret file: {$smtpConfig->secret_name}");
+            }
+            $secret = file_get_contents($filename);
+            if ($secret === false) {
+                throw new \RuntimeException("Unable to read smtp secret file: {$smtpConfig->secret_name}");
+            }
+            return rtrim($secret, "\r\n");
+        }
+
+        return KeyStore::Get()->getAccessKey($smtpConfig->secret_name);
+    }
+
+    public function sendMail(string $mailId = null, bool $delete = true) {
+        $this->mailSpooler->setDriver($this->createSmtpDriver());
         $mails = $this->mailSpooler->list();
         foreach ($mails as $mail) {
             if ($mailId !== null && $mail->getMailSpoolId() !== $mailId)

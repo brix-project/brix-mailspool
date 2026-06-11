@@ -8,4 +8,7 @@ mailspool:
         username: ''
         sender: 'no-reply@host.xy'
         sender_name: "BrixSender"
-        # SMTP password is retrieved vom Keystore <servername>
+        # Optional: override the keystore key name or load from a file via
+        # secret_name: 'smtp_password'
+        # secret_name: 'file:///run/secrets/smtp_password'
+        # By default the SMTP password is retrieved from keystore using <host>.
